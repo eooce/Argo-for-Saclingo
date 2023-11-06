@@ -10,6 +10,10 @@
 上传完成后复制链接地址 
 ![image](https://github.com/eoovve/Argo-for-Sac/assets/142894633/90286f7d-cd6d-4182-83dd-905321b57bb1)
 
-然后打开新建的私库项目，打开index.js,找到79和89行，替换地址
+然后打开新建的私库项目，打开index.js,找到79和86行，替换地址，上方保存即可去saclingo网站链接项目部署
+![image](https://github.com/eoovve/Argo-for-Sac/assets/142894633/5ae84380-bea5-45bc-9fea-e167268b1ac3)
+
+查看节点：域名/list  或   域名/sub 订阅链接
+
 
 
