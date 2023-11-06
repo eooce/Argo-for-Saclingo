@@ -7,3 +7,9 @@
 
 ![image](https://github.com/eoovve/Argo-for-Sac/assets/142894633/5d579774-2a68-42e5-a812-6f5da3b5a3c7)
 
+上传完成后复制链接地址 
+![image](https://github.com/eoovve/Argo-for-Sac/assets/142894633/90286f7d-cd6d-4182-83dd-905321b57bb1)
+
+然后打开新建的私库项目，打开index.js,找到79和89行，替换地址
+
+
