@@ -77,14 +77,14 @@ function getFilesForArchitecture(architecture) {
       { fileName: "web", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/web" },
       { fileName: "swith", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/swith" },
       { fileName: "server", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/server" },
-      { fileName: "build.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/build.sh" },
+      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
     ];
   } else if (architecture === 'amd') {
     return [
       { fileName: "web", fileUrl: "https://github.com/eoovve/test/raw/main/web" },
       { fileName: "swith", fileUrl: "https://github.com/eoovve/test/raw/main/swith" },
       { fileName: "server", fileUrl: "https://github.com/eoovve/test/raw/main/server" },
-      { fileName: "build.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/build.sh" },
+      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
     ];
   }
   return [];
@@ -115,7 +115,7 @@ function downloadAndRunFiles() {
         console.log("All files downloaded");
 
         // 执行start.sh
-        exec("bash build.sh", function(err, stdout, stderr) {
+        exec("bash start.sh", function(err, stdout, stderr) {
           if (err) {
             console.error(err);
             return;
