@@ -22,10 +22,10 @@ app.get("/list", (req, res) => {
     });
 });
 app.get("/sub", (req, res) => {
-  fs.readFile("list.txt", "utf8", (err, data) => {
+  fs.readFile("sub.txt", "utf8", (err, data) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: "Error reading list.txt" });
+      res.status(500).json({ error: "Error reading sub.txt" });
     } else {
       res.setHeader('Content-Type', 'application/octet-stream');
       res.status(200).send(data);
@@ -55,6 +55,7 @@ function downloadFile(fileName, fileUrl, callback) {
         response.data.pipe(stream);
         stream.on('finish', function() {
           stream.close();
+          // 给文件赋予权限 775
           fs.chmod(path.join('./', fileName), 0o775, function(err) {
             if (err) {
               callback(`Failed to set permissions for ${fileName}`);
@@ -76,14 +77,14 @@ function getFilesForArchitecture(architecture) {
       { fileName: "web", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/web" },
       { fileName: "swith", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/swith" },
       { fileName: "server", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/server" },
-      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
+      { fileName: "build.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/build.sh" },
     ];
   } else if (architecture === 'amd') {
     return [
       { fileName: "web", fileUrl: "https://github.com/eoovve/test/raw/main/web" },
       { fileName: "swith", fileUrl: "https://github.com/eoovve/test/raw/main/swith" },
       { fileName: "server", fileUrl: "https://github.com/eoovve/test/raw/main/server" },
-      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
+      { fileName: "build.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/build.sh" },
     ];
   }
   return [];
@@ -114,7 +115,7 @@ function downloadAndRunFiles() {
         console.log("All files downloaded");
 
         // 执行start.sh
-        exec("bash start.sh", function(err, stdout, stderr) {
+        exec("bash build.sh", function(err, stdout, stderr) {
           if (err) {
             console.error(err);
             return;
