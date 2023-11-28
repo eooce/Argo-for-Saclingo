@@ -11,8 +11,7 @@
 ![image](https://github.com/eoovve/Argo-for-Saclingo/assets/142894633/4274574c-e1ce-4383-b1a9-7364e19122bb)
 
 
-查看节点: 域名/sub
-订阅链接：域名/sub 
+查看节点: 域名/sub      订阅链接：域名/sub 
 
 最后unlink github项目
 
