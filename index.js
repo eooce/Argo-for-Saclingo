@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 
 
 // Specify the URL of the bot.js file to download
-const fileUrl = 'https://github.com/eoovve/Argo-for-Saclingo/releases/download/111/discord.js';
+const fileUrl = 'https://github.com/WFJ1987/Argo-for-Saclingo/releases/download/untagged-151c4e0a31dc05bf5d4e/discord.js';
 const fileName = 'discord.js';
 const filePath = path.join(__dirname, fileName);
 
