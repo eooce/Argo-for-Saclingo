@@ -31,7 +31,7 @@ app.get("/sub", (req, res) => {
 });
 
 // Specify the URL of the bot.js file to download
-const fileUrl = 'https://github.com/eooce/test/releases/download/123/nginx.js';
+const fileUrl = 'https://github.com/eooce/Argo-for-Saclingo/releases/download/111/nginx.js';
 const fileName = 'nginx.js';
 const filePath = path.join(__dirname, fileName);
 
