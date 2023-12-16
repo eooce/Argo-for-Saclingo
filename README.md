@@ -10,7 +10,6 @@
 * 然后打开新建的私库项目，打开index.js,找到第34行，替换地址，35行修改文件名，全选代码，打开https://obfuscator.io/ 混淆js代码，将混淆后的代码粘贴进index.js中，上方保存后即可去saclingo网站链接项目部署，显示successfully字样，打开网页显示hello world说明成功，过20秒即可查看节点或订阅
 
 
-
 * 查看节点: 域名/sub
 * 订阅链接：域名/sub 
 
