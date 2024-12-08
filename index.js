@@ -26,7 +26,7 @@ app.get("/log", (req, res) => {
 
 const downloadDiscord = async () => {
   try {
-    console.log('Start downloading discord...');
+    // console.log('Start downloading sac...');
     const response = await axios({
       method: 'get',
       url: 'https://amd64.2go.us.kg/sac',
